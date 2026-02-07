@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Clinic Appointment System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+
+    <h1>Clinic Appointment System</h1>
+    
+    <h2>Register</h2>
+    <input id="r-name" type="text" placeholder="Name">
+    <input id="r-email" type="email" placeholder="Email">
+    <input id="r-password" type="password" placeholder="Password">
+    <button onclick="register()">Register</button>
+
+    <h2>Login</h2>
+    <input id="l-email" type="email" placeholder="Email">
+    <input id="l-password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <p id="msg"></p>
+
+  </div>
+
+  <script>
+    function register() {
+      fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: document.getElementById("r-name").value,
+          email: document.getElementById("r-email").value,
+          password: document.getElementById("r-password").value
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("msg").innerText = data.message;
+        document.getElementById("msg").style.color = "green";
+      });
+    }
+
+    function login() {
+      fetch("/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: document.getElementById("l-email").value,
+          password: document.getElementById("l-password").value
+        })
+      })
+      .then(async res => {
+        const data = await res.json();
+        const msg = document.getElementById("msg");
+
+        if (res.status === 401) {
+          msg.innerText = data.message;
+          msg.style.color = "red";
+        } else {
+          msg.innerText = data.message;
+          msg.style.color = "green";
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
